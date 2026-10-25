@@ -3,6 +3,7 @@ import json
 import joblib
 import tiktoken
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware  # <-- 1. Import CORSMiddleware
 from pydantic import BaseModel, ConfigDict
 
 # 1. Initialize FastAPI app
@@ -10,6 +11,15 @@ app = FastAPI(
     title="LLM FinOps & Latency Forecaster API",
     version="1.0.0",
     description="Production-grade microservice to predict LLM token consumption, latency, and costs."
+)
+
+# 🏭 2. Add CORS Middleware (Yeh zaroori hai Next.js connection ke liye!)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Development aur initial deployment ke liye sab origins allow hain
+    allow_credentials=True,
+    allow_methods=["*"],  # GET, POST, OPTIONS, etc. sab allow hain
+    allow_headers=["*"],
 )
 
 # 2. Define Paths & Load Artifacts on Startup (Memory Caching)
